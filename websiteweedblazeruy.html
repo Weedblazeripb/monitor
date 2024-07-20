@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeedBlazer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <style>
+        /* Your existing CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e0f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 10px;
+            background-color: #004d40;
+            color: white;
+        }
+        .header .title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .header .time {
+            font-size: 18px;
+        }
+        .header .battery {
+            font-size: 18px;
+        }
+        .content {
+            display: flex;
+            width: 100%;
+            height: 80%;
+            margin-top: 20px;
+        }
+        .left-panel, .right-panel {
+            width: 20%;
+            padding: 10px;
+        }
+        .main-panel {
+            width: 60%;
+            padding: 10px;
+            text-align: center;
+        }
+        .main-panel video {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+        }
+        .gps-data {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            background-color: #004d40;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .stats div {
+            width: 45%;
+            text-align: center;
+        }
+        .operation-time-header {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .operation-time {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+        .map {
+            height: 150px;
+        }
+        .button {
+            background-color: red;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .weed-info {
+            background-color: #00acc1;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .timer-buttons {
+            margin-top: 10px;
+        }
+        .timer-buttons button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">WeedBlazer</div>
+            <div class="time">12:30 PM</div>
+            <div class="battery">Battery: 80%</div>
+        </div>
+        <div class="content">
+            <div class="left-panel">
+                <div class="gps-data">
+                    GPS: Lat: -6.914744, Long: 107.609810
+                </div>
+                <div class="map" id="map"></div>
+            </div>
+            <div class="main-panel">
+                <video id="videoFeed" autoplay muted></video>
+            </div>
+            <div class="right-panel">
+                <div class="weed-info">
+                    Weed Count: <span id="weedCount">0</span>
+                </div>
+                <div class="timer-buttons">
+                    <button id="startBtn">Start</button>
+                    <button id="stopBtn">Stop</button>
+                </div>
+            </div>
+        </div>
+        <div class="stats">
+            <div>
+                <div class="operation-time-header">Operation Time</div>
+                <div class="operation-time" id="operationTime">00:00:00</div>
+            </div>
+            <div>
+                <div class="operation-time-header">Elapsed Time</div>
+                <div class="operation-time" id="elapsedTime">00:00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <script>
+        const videoFeed = document.getElementById('videoFeed');
+        videoFeed.src = '/video_feed';
+
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const weedCount = document.getElementById('weedCount');
+
+        startBtn.addEventListener('click', () => {
+            fetch('/start', { method: 'POST' });
+        });
+
+        stopBtn.addEventListener('click', () => {
+            fetch('/stop', { method: 'POST' });
+        });
+
+        // Initialize map
+        const map = L.map('map').setView([-6.914744, 107.609810], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+    </script>
+</body>
+</html>
